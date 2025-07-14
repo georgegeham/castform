@@ -1,16 +1,18 @@
-import { useForm, SubmitHandler } from "react-hook-form";
-import CreateableSelect from "react-select/creatable";
+import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 import Plays from "./plays";
-import { ActorRewards } from "./Rewards";
+import { useForm, SubmitHandler } from "react-hook-form";
+import Tournaments from "./Tournaments";
+import { PlayRewards } from "./Rewards";
 type Inputs = {
-  name: string;
-  mobile: string;
-  email: string;
-  bdate: string;
-  dateOfEntrance: string;
-  noPlays: string;
+  Director: string;
+  Decor: string;
+  Lightning: string;
+  Costumes: string;
+  Music: string;
+  Date: string;
 };
-export default function Actor() {
+export default function Play() {
   const {
     register,
     handleSubmit,
@@ -19,54 +21,35 @@ export default function Actor() {
   const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
   return (
     <form
-      className="sm:space-y-5 sm:mt-12 space-y-3 mt-4"
+      className="sm:space-y-4 sm:mt-6 space-y-3 mt-4"
       onSubmit={handleSubmit(onSubmit)}
     >
+      <div className="px-4 box-border">
+        <p className="text-right text-sm font-semibold font-serif pb-1">
+          اختار العرض الي حابب تساعد في توثيقه (ممكن تكتب اسمه لو مش موجود)
+        </p>
+        <Select isSearchable={true} options={Plays} />
+      </div>
       <div className="space-x-2 grid grid-cols-2 place-content-center px-4">
         <label
-          htmlFor="name"
+          htmlFor="Director"
           className="text-lg text-[#021024] flex items-center"
         >
-          <span className="mr-2">🎭</span>Name
+          <span className="mr-2">😎</span>Director
           <span className="text-red-600">*</span>
         </label>
         <input
           type="text"
-          id="name"
-          placeholder="Enter Your Name..."
-          className="rounded-md bg-[#021024] outline-none text-sm p-2 text-[#C1E8FF]"
-          {...register("name", {
+          id="Director"
+          placeholder="Enter Director..."
+          className="rounded-md bg-[#021024] outline-none text-sm p-2 text-[#C1E8FF] "
+          {...register("Director", {
             required: true,
             maxLength: 50,
             pattern: /^[A-Za-z\s]+$/i,
           })}
         />
-        {errors.name && (
-          <span className="text-[#021024] text-sm col-span-2 text-right pr-1 font-semibold">
-            انا ملسم الموقع اكتب عدل بقي
-          </span>
-        )}
-      </div>
-      <div className="space-x-2 grid grid-cols-2 place-content-center px-4">
-        <label
-          htmlFor="mobile"
-          className="text-lg text-[#021024] flex items-center"
-        >
-          <span className="mr-2">📱</span>Mobile
-          <span className="text-red-600">*</span>
-        </label>
-        <input
-          type="text"
-          id="mobile"
-          placeholder="Enter Your Mobile..."
-          className="rounded-md bg-[#021024] outline-none text-sm p-2 text-[#C1E8FF] "
-          {...register("mobile", {
-            required: true,
-            maxLength: 11,
-            pattern: /^0[0-9]{10}$/i,
-          })}
-        />
-        {errors.mobile && (
+        {errors.Director && (
           <span className="text-[#021024] text-sm col-span-2 text-right pr-1 font-semibold">
             مش كفاية لعب بقي ولا ايه؟
           </span>
@@ -74,45 +57,47 @@ export default function Actor() {
       </div>
       <div className="space-x-2 grid grid-cols-2 place-content-center px-4">
         <label
-          htmlFor="email"
+          htmlFor="Decor"
           className="text-lg text-[#021024] flex items-center"
         >
-          <span className="mr-2">📧</span>Email
+          <span className="mr-2">⚒️</span>Decor
         </label>
         <input
-          type="email"
-          id="email"
-          placeholder="Enter Your Email..."
+          type="text"
+          id="Decor"
+          placeholder="Enter Decor..."
           className="rounded-md bg-[#021024] outline-none text-sm p-2 text-[#C1E8FF] "
-          {...register("email", {
+          {...register("Decor", {
             required: false,
             maxLength: 100,
-            pattern: /^\S+@\S+\.\S+$/i,
+            pattern: /^[A-Za-z\s]+$/i,
           })}
         />
-        {errors.email && (
+        {errors.Decor && (
           <span className="text-[#021024] text-sm col-span-2 text-right pr-1 font-semibold">
             بدأت ازهق بجد منك
           </span>
         )}
       </div>
       <div className="space-x-2 grid grid-cols-2 place-content-center px-4">
-        <label htmlFor="bdate" className="text-lg text-[#021024] items-center">
-          <span className="mr-2">🎂</span>BirthDate
-          <span className="text-red-600">*</span>
+        <label
+          htmlFor="Lightning"
+          className="text-lg text-[#021024] flex items-center"
+        >
+          <span className="mr-2">🔦</span>Lightning
         </label>
         <input
-          type="date"
-          id="bdate"
-          placeholder="Enter Your Name..."
+          type="text"
+          id="Lightning"
+          placeholder="Enter Lightning..."
           className="rounded-md bg-[#021024] outline-none text-sm p-2 text-[#C1E8FF] "
-          {...register("bdate", {
-            required: true,
-            maxLength: 20,
-            pattern: /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/i,
+          {...register("Lightning", {
+            required: false,
+            maxLength: 100,
+            pattern: /^[A-Za-z\s]+$/i,
           })}
         />
-        {errors.bdate && (
+        {errors.Lightning && (
           <span className="text-[#021024] text-sm col-span-2 text-right pr-1 font-semibold">
             ارحمنيييييييييييي بقييييييييي
           </span>
@@ -120,24 +105,23 @@ export default function Actor() {
       </div>
       <div className="space-x-2 grid grid-cols-2 place-content-center px-4">
         <label
-          htmlFor="dateOfEntrance"
+          htmlFor="Costumes"
           className="text-lg text-[#021024] flex items-center"
         >
-          <span className="mr-2">🎭</span>Date of Joining
-          <span className="text-red-600">*</span>
+          <span className="mr-2">🥻</span>Costumes
         </label>
         <input
-          type="date"
-          id="dateOfEntrance"
-          placeholder="Enter Date of Joining..."
+          type="text"
+          id="Costumes"
+          placeholder="Enter Costumes..."
           className="rounded-md bg-[#021024] outline-none text-sm p-2 text-[#C1E8FF] "
-          {...register("dateOfEntrance", {
-            required: true,
-            maxLength: 15,
-            pattern: /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/i,
+          {...register("Costumes", {
+            required: false,
+            maxLength: 100,
+            pattern: /^[A-Za-z\s]+$/i,
           })}
         />
-        {errors.dateOfEntrance && (
+        {errors.Costumes && (
           <span className="text-[#021024] text-sm col-span-2 text-right pr-1 font-semibold">
             هشتمك مهما تكن مين
           </span>
@@ -145,53 +129,76 @@ export default function Actor() {
       </div>
       <div className="space-x-2 grid grid-cols-2 place-content-center px-4">
         <label
-          htmlFor="noPlays"
+          htmlFor="music"
           className="text-lg text-[#021024] flex items-center"
         >
-          <span className="mr-2">🎭</span>No of Plays
-          <span className="text-red-600">*</span>
+          <span className="mr-2">🎼</span>Music
         </label>
         <input
           type="text"
-          id="noPlays"
-          placeholder="Enter Number of Plays..."
+          id="music"
+          placeholder="Enter Music..."
           className="rounded-md bg-[#021024] outline-none text-sm p-2 text-[#C1E8FF] "
-          {...register("noPlays", {
-            required: true,
-            maxLength: 2,
-            pattern: /^[0-9]{1,2}$/i,
+          {...register("Music", {
+            required: false,
+            maxLength: 100,
+            pattern: /^[A-Za-z\s]+$/i,
           })}
         />
-        {errors.noPlays && (
+        {errors.Music && (
           <span className="text-[#021024] text-sm col-span-2 text-right pr-1 font-semibold">
             يارب الموقع يضرب في وشك
           </span>
         )}
       </div>
-      <div className="px-4 ">
+      <div className="space-x-2 grid grid-cols-2 place-content-center px-4">
+        <label
+          htmlFor="Date"
+          className="text-lg text-[#021024] flex items-center"
+        >
+          <span className="mr-2">⌛</span>Date
+          <span className="text-red-600">*</span>
+        </label>
+        <input
+          type="Date"
+          id="Date"
+          className="rounded-md bg-[#021024] outline-none text-sm p-2 text-[#C1E8FF] "
+          {...register("Date", {
+            required: true,
+            maxLength: 12,
+            pattern: /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/i,
+          })}
+        />
+        {errors.Date && (
+          <span className="text-[#021024] text-sm col-span-2 text-right pr-1 font-semibold">
+            يارب الموقع يضرب في وشك
+          </span>
+        )}
+      </div>
+      <div className="px-4 box-border">
         <p className="text-right text-sm font-semibold font-serif pb-1">
-          <span className="text-red-600">*</span>اختار العروض الي شاركت فيها
-          (ممكن تكتب اسم العرض لو مش موجود)
+          <span className="text-red-600">*</span> اختار المهرجانات الي شارك فيها
+          العرض (ممكن تكتب اسم المهرجان)
         </p>
-        <CreateableSelect
+        <CreatableSelect
           isMulti
-          options={Plays}
-          placeholder="اختار العرض"
+          options={Tournaments}
           className="w-full mx-auto text-xs"
           menuPlacement="top"
+          placeholder="اختار المهرجان"
         />
       </div>
-      <div className="px-4">
+      <div className="px-4 box-border">
         <p className="text-right text-sm font-semibold font-serif pb-1">
-          <span className="text-red-600">*</span>اختار الجوائز الي حصلت عليها
-          (ممكن تكتب اسم الجائزة لو مش موجودة)
+          <span className="text-red-600">*</span>اختار الجوائز الي حصل عليها
+          العرض في مختلف المهرجانات
         </p>
-        <CreateableSelect
+        <CreatableSelect
           isMulti
-          options={ActorRewards}
-          placeholder="اختار الجائزة"
-          className="w-full mx-auto text-xs"
+          options={PlayRewards}
+          placeholder="اختار الجوائز في مختلف المهرجانات"
           menuPlacement="top"
+          className="w-full mx-auto text-xs"
         />
       </div>
       <div className="space-x-2 grid grid-cols-1 px-4 ">

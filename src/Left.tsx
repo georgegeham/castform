@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Actor from "./Actor";
+import Play from "./Play";
 
 export default function Left() {
   const [isActor, setIsActor] = useState<boolean>(true);
@@ -19,7 +20,7 @@ export default function Left() {
           Play
         </button>
       </nav>
-      {isActor ? <Actor /> : <h1>Hello World</h1>}
+      {isActor ? <Actor /> : <Play />}
     </section>
   );
 }
