@@ -1,24 +1,68 @@
-import Select from "react-select";
-import CreatableSelect from "react-select/creatable";
+import AsyncCreatableSelect from "react-select/async-creatable";
 import Plays from "./plays";
 import { useForm, SubmitHandler } from "react-hook-form";
-import Tournaments from "./Tournaments";
-import { PlayRewards } from "./Rewards";
-type Inputs = {
-  Director: string;
-  Decor: string;
-  Lightning: string;
-  Costumes: string;
-  Music: string;
-  Date: string;
-};
+import { useState } from "react";
+import { Selected, PlayInputs, Tournament, Reward } from "./Types";
+import {
+  loadTournaments,
+  loadRewards,
+  createTournament,
+  postPlay,
+} from "./API";
+import CreatableSelect from "react-select/creatable";
 export default function Play() {
+  const [selectedTournament, setSelectedTournament] = useState<
+    Selected[] | null
+  >(null);
+  const [selectedReward, setSelectedReward] = useState<Selected[] | null>(null);
+  const [selectedPlay, setSelectedPlay] = useState<Selected | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  } = useForm<PlayInputs>();
+  const onSubmit: SubmitHandler<PlayInputs> = async (data) => {
+    setIsSubmitting(true);
+    if (!selectedPlay || !selectedTournament) {
+      alert("اختار العرض و المهرجان");
+      return;
+    }
+    let rewards: Reward[] | [] = [];
+    if (selectedReward) {
+      rewards = selectedReward.map((reward) => ({
+        ID: reward.value,
+        rname: reward.label,
+      }));
+    }
+    const tournaments: Tournament[] = selectedTournament.map((tournament) => ({
+      ID: tournament.value,
+      tname: tournament.label,
+    }));
+    try {
+      const response = await postPlay({
+        ID: selectedPlay?.value ?? Math.random() + Date.now(),
+        pname: selectedPlay?.label ?? "",
+        pdate: new Date(data.Date),
+        costumes: data.Costumes,
+        decor: data.Decor,
+        director_name: data.Director,
+        lightning: data.Lightning,
+        music: data.Music,
+        Rewards: rewards,
+        Tournaments: tournaments,
+      });
+      if (response.status === 201) {
+        setIsSubmitting(true);
+        alert("تم الحفظ بنجاح");
+      }
+    } catch (err) {
+      console.log("Error Saving Play");
+      alert("هذا العرض تم توثيقة من قبل");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   return (
     <form
       className="sm:space-y-4 sm:mt-6 space-y-3 mt-4"
@@ -28,7 +72,22 @@ export default function Play() {
         <p className="text-right text-sm font-semibold font-serif pb-1">
           اختار العرض الي حابب تساعد في توثيقه (ممكن تكتب اسمه لو مش موجود)
         </p>
-        <Select isSearchable={true} options={Plays} />
+        <CreatableSelect
+          isClearable
+          isSearchable={true}
+          className="w-full mx-auto text-xs"
+          placeholder="اختار اسم العرض"
+          options={Plays}
+          onChange={(option) => setSelectedPlay(option)}
+          onCreateOption={(option) => {
+            const newOption: Selected = {
+              label: option,
+              value: Date.now() + Math.random(),
+            };
+            setSelectedPlay(newOption);
+          }}
+          value={selectedPlay}
+        />
       </div>
       <div className="space-x-2 grid grid-cols-2 place-content-center px-4">
         <label
@@ -180,9 +239,18 @@ export default function Play() {
           <span className="text-red-600">*</span> اختار المهرجانات الي شارك فيها
           العرض (ممكن تكتب اسم المهرجان)
         </p>
-        <CreatableSelect
+        <AsyncCreatableSelect
           isMulti
-          options={Tournaments}
+          isSearchable
+          defaultOptions
+          cacheOptions={true}
+          loadOptions={loadTournaments}
+          onChange={(option) => setSelectedTournament(option as Selected[])}
+          onCreateOption={async (inputValue) => {
+            const created = await createTournament(inputValue);
+            setSelectedTournament((prev) => [...(prev || []), created]);
+          }}
+          value={selectedTournament}
           className="w-full mx-auto text-xs"
           menuPlacement="top"
           placeholder="اختار المهرجان"
@@ -190,12 +258,16 @@ export default function Play() {
       </div>
       <div className="px-4 box-border">
         <p className="text-right text-sm font-semibold font-serif pb-1">
-          <span className="text-red-600">*</span>اختار الجوائز الي حصل عليها
-          العرض في مختلف المهرجانات
+          اختار الجوائز الي حصل عليها العرض في مختلف المهرجانات
         </p>
-        <CreatableSelect
+        <AsyncCreatableSelect
           isMulti
-          options={PlayRewards}
+          isSearchable
+          defaultOptions
+          cacheOptions={true}
+          loadOptions={loadRewards}
+          onChange={(option) => setSelectedReward(option as Selected[])}
+          value={selectedReward}
           placeholder="اختار الجوائز في مختلف المهرجانات"
           menuPlacement="top"
           className="w-full mx-auto text-xs"
@@ -204,7 +276,10 @@ export default function Play() {
       <div className="space-x-2 grid grid-cols-1 px-4 ">
         <input
           type="submit"
-          className="bg-[#021024] rounded-md py-2 text-[#C1E8FF] w-max px-4 justify-self-center cursor-pointer transition-opacity duration-300 ease-in-out hover:opacity-70"
+          value={isSubmitting ? "..." : "Save"}
+          className={`bg-[#021024] rounded-md py-2 text-[#C1E8FF] w-max px-4 justify-self-center cursor-pointer transition-opacity duration-300 ease-in-out hover:opacity-70 ${
+            isSubmitting ? "animate-bounce" : ""
+          }`}
         />
       </div>
     </form>

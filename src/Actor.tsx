@@ -1,25 +1,61 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import CreateableSelect from "react-select/creatable";
+import AsyncCreatableSelect from "react-select/async-creatable";
 import Plays from "./plays";
-import { ActorRewards } from "./Rewards";
-type Inputs = {
-  name: string;
-  mobile: string;
-  email: string;
-  bdate: string;
-  dateOfEntrance: string;
-  noPlays: string;
-};
+import { ActorInputs, Selected, ACTOR } from "./Types";
+import { MultiValue } from "react-select";
+import { useState } from "react";
+import { loadRewards, postActor, uploadImageToImgbb } from "./API";
+import CreatableSelect from "react-select/creatable";
 export default function Actor() {
+  const [selectedReward, setSelectedReward] = useState<Selected[] | null>(null);
+  const [selectedPlay, setSelectedPlay] = useState<MultiValue<Selected>>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  } = useForm<ActorInputs>();
+  const onSubmit: SubmitHandler<ActorInputs> = async (data) => {
+    setIsSubmitting(true);
+    try {
+      const file = data.ImageURL[0];
+      const imageUrl: string = await uploadImageToImgbb(file);
+      const payload: ACTOR = {
+        name: data.name,
+        mobile: data.mobile,
+        email: data.email ?? null,
+        bdate: data.bdate,
+        DateOfEntrance: data.dateOfEntrance,
+        NoPlays: data.noPlays,
+        ImgURL: imageUrl,
+        Plays:
+          selectedPlay?.map((p) => ({
+            pname: p.label,
+            ID: p.value,
+          })) ?? [],
+        Rewards:
+          selectedReward?.map((r) => ({
+            rname: r.label,
+            ID: r.value,
+          })) ?? [],
+      };
+
+      const result = await postActor(payload);
+      if (result.status === 201) {
+        alert("تم تسجيلك بنجاح");
+        setIsSubmitting(false);
+      }
+    } catch (error) {
+      alert("في مشكلة حاول مرة تانية");
+      console.error("❌ Upload failed:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <form
-      className="sm:space-y-5 sm:mt-12 space-y-3 mt-4"
+      className="sm:space-y-4 sm:mt-8 space-y-3 mt-4"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="space-x-2 grid grid-cols-2 place-content-center px-4">
@@ -168,36 +204,75 @@ export default function Actor() {
           </span>
         )}
       </div>
+      <div className="space-x-2 grid grid-cols-2 place-content-center px-4">
+        <label
+          htmlFor="Image"
+          className="text-lg text-[#021024] flex items-center"
+        >
+          <span className="mr-2">🎭</span>Image
+          <span className="text-red-600">*</span>
+        </label>
+        <input
+          type="file"
+          id="Image"
+          className="rounded-md bg-[#021024] outline-none text-sm p-2 text-[#C1E8FF] "
+          {...register("ImageURL", {
+            required: true,
+          })}
+        />
+        {errors.noPlays && (
+          <span className="text-[#021024] text-sm col-span-2 text-right pr-1 font-semibold">
+            يارب الموقع يضرب في وشك
+          </span>
+        )}
+      </div>
       <div className="px-4 ">
         <p className="text-right text-sm font-semibold font-serif pb-1">
-          <span className="text-red-600">*</span>اختار العروض الي شاركت فيها
-          (ممكن تكتب اسم العرض لو مش موجود)
+          اختار العروض الي شاركت فيها (ممكن تكتب اسم العرض لو مش موجود)
         </p>
-        <CreateableSelect
+        <CreatableSelect
+          isClearable
           isMulti
-          options={Plays}
-          placeholder="اختار العرض"
+          isSearchable={true}
           className="w-full mx-auto text-xs"
+          placeholder="اختار اسم العرض"
+          options={Plays}
           menuPlacement="top"
+          onChange={(option) => setSelectedPlay(option)}
+          onCreateOption={(option) => {
+            const newOption: Selected = {
+              label: option,
+              value: Date.now() + Math.random(),
+            };
+            setSelectedPlay((prev) => [...(prev || []), newOption]);
+          }}
+          value={selectedPlay}
         />
       </div>
       <div className="px-4">
         <p className="text-right text-sm font-semibold font-serif pb-1">
-          <span className="text-red-600">*</span>اختار الجوائز الي حصلت عليها
-          (ممكن تكتب اسم الجائزة لو مش موجودة)
+          اختار الجوائز الي حصلت عليها (ممكن تكتب اسم الجائزة لو مش موجودة)
         </p>
-        <CreateableSelect
+        <AsyncCreatableSelect
           isMulti
-          options={ActorRewards}
-          placeholder="اختار الجائزة"
-          className="w-full mx-auto text-xs"
+          isSearchable
+          defaultOptions
+          cacheOptions={true}
+          loadOptions={loadRewards}
+          onChange={(option) => setSelectedReward(option as Selected[])}
+          value={selectedReward}
+          placeholder="اختار الجوائز في مختلف المهرجانات"
           menuPlacement="top"
+          className="w-full mx-auto text-xs"
         />
       </div>
       <div className="space-x-2 grid grid-cols-1 px-4 ">
         <input
           type="submit"
-          className="bg-[#021024] rounded-md py-2 text-[#C1E8FF] w-max px-4 justify-self-center cursor-pointer transition-opacity duration-300 ease-in-out hover:opacity-70"
+          value={isSubmitting ? "..." : "Save"}
+          className={`bg-[#0b0c0c] rounded-md py-2 text-[#C1E8FF] w-max px-4 justify-self-center cursor-pointer transition-opacity duration-300 ease-in-out hover:opacity-70 ${
+            isSubmitting ? "animate-bounce" : ""
+          }`}
         />
       </div>
     </form>
