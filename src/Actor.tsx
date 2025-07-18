@@ -75,6 +75,8 @@ export default function Actor() {
             required: true,
             maxLength: 50,
             pattern: /^[A-Za-z\s]+$/i,
+            validate: (value) =>
+              value.trim().split(/\s+/).length === 2 || "دخل الاسم ثنائي معلش",
           })}
         />
         {errors.name && (
