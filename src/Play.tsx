@@ -8,6 +8,7 @@ import {
   loadRewards,
   createTournament,
   postPlay,
+  createReward,
 } from "./API";
 import CreatableSelect from "react-select/creatable";
 export default function Play() {
@@ -267,6 +268,10 @@ export default function Play() {
           cacheOptions={true}
           loadOptions={loadRewards}
           onChange={(option) => setSelectedReward(option as Selected[])}
+          onCreateOption={async (option) => {
+            const created = await createReward(option);
+            setSelectedReward((prev) => [...(prev || []), created]);
+          }}
           value={selectedReward}
           placeholder="اختار الجوائز في مختلف المهرجانات"
           menuPlacement="top"
