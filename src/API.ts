@@ -79,7 +79,7 @@ export const loadPlays = async (): Promise<Selected[]> => {
   try {
     const response = await axios.get<Play[]>(`${URL}/plays`);
     return response.data.map((play) => ({
-      value: Date.now() + Math.random(),
+      value: play.ID,
       label: play.pname,
     }));
   } catch (err) {

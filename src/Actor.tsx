@@ -1,11 +1,10 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import AsyncCreatableSelect from "react-select/async-creatable";
-import Plays from "./plays";
 import { ActorInputs, Selected, ACTOR } from "./Types";
 import { MultiValue } from "react-select";
 import { useState } from "react";
-import { loadRewards, postActor, uploadImageToImgbb } from "./API";
-import CreatableSelect from "react-select/creatable";
+import { loadPlays, loadRewards, postActor, uploadImageToImgbb } from "./API";
+import AsyncSelect from "react-select/async";
 export default function Actor() {
   const [selectedReward, setSelectedReward] = useState<Selected[] | null>(null);
   const [selectedPlay, setSelectedPlay] = useState<MultiValue<Selected>>([]);
@@ -228,30 +227,23 @@ export default function Actor() {
             يارب الموقع يضرب في وشك
           </span>
         )}
-        :
       </div>
       <div className="px-4 ">
         <p className="text-right text-sm font-semibold font-serif pb-1">
           اختار العروض الي شاركت فيها (ممكن تكتب اسم العرض لو مش موجود)
         </p>
-        <CreatableSelect
+        <AsyncSelect
           isClearable
           isMulti
+          defaultOptions
           isSearchable={true}
           className="w-full mx-auto text-xs"
           placeholder="اختار اسم العرض"
-          options={Plays}
+          loadOptions={loadPlays}
           menuPlacement="top"
           onChange={(option) => {
             setSelectedPlay(option);
             setNumber((prev) => prev + 1);
-          }}
-          onCreateOption={(option) => {
-            const newOption: Selected = {
-              label: option,
-              value: Date.now() + Math.random(),
-            };
-            setSelectedPlay((prev) => [...(prev || []), newOption]);
           }}
           value={selectedPlay}
         />
