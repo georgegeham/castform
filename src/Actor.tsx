@@ -240,8 +240,8 @@ export default function Actor() {
           onChange={handleFileChange}
         />
         {fileSelected && (
-          <p className="text-green-500 text-sm mt-1">
-            ✅ Image selected successfully!
+          <p className="text-green-500 text-sm mt-1 col-span-3">
+            ✅ اترفعت يا نجم يا كبير
           </p>
         )}
         {errors.noPlays && (
