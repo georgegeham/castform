@@ -2,7 +2,7 @@ import { Selected, Tournament, Reward, Play, ACTOR } from "./Types";
 import axios, { AxiosResponse } from "axios";
 //Tournaments
 //GET Tournaments
-const URL = "https://casthandasaserver-production.up.railway.app";
+const URL = "http://localhost:5050";
 export const loadTournaments = async (): Promise<Selected[]> => {
   try {
     const response = await axios.get<Tournament[]>(`${URL}/tournaments`);
@@ -78,7 +78,7 @@ export const loadPlays = async (): Promise<Selected[]> => {
   try {
     const response = await axios.get<Play[]>(`${URL}/plays`);
     return response.data.map((play) => ({
-      value: Date.now() + Math.random(),
+      value: play.ID,
       label: play.pname,
     }));
   } catch (err) {
