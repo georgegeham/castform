@@ -57,11 +57,11 @@ CastForm is a theater festival management platform designed to streamline regist
 2. **Setup Environment Variables:**
 
    ```bash
-       DB_USER=your_db_user
-       DB_PASSWORD=your_password
-       DB_SERVER=your_sql_server.database.windows.net
-       DB_DATABASE=your_database_name
-       PORT=5050
+    DB_USER=your_db_user
+    DB_PASSWORD=your_password
+    DB_SERVER=your_sql_server.database.windows.net
+    DB_DATABASE=your_database_name
+    PORT=5050
    ```
 
 3. **Install Dependencies:**
@@ -73,5 +73,5 @@ CastForm is a theater festival management platform designed to streamline regist
 4. **Run the project locally:**
 
    ```bash
-       npm run dev
+    npm run dev
    ```
