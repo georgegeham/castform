@@ -10,6 +10,7 @@ export default function Actor() {
   const [selectedReward, setSelectedReward] = useState<Selected[] | null>(null);
   const [selectedPlay, setSelectedPlay] = useState<MultiValue<Selected>>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [number, setNumber] = useState(0);
   const {
     register,
     handleSubmit,
@@ -190,6 +191,7 @@ export default function Actor() {
         <input
           type="text"
           id="noPlays"
+          value={number}
           placeholder="Enter Number of Plays..."
           className="rounded-md bg-[#021024] outline-none text-sm p-2 text-[#C1E8FF] "
           {...register("noPlays", {
@@ -197,6 +199,7 @@ export default function Actor() {
             maxLength: 2,
             pattern: /^[0-9]{1,2}$/i,
           })}
+          readOnly
         />
         {errors.noPlays && (
           <span className="text-[#021024] text-sm col-span-2 text-right pr-1 font-semibold">
@@ -225,6 +228,7 @@ export default function Actor() {
             يارب الموقع يضرب في وشك
           </span>
         )}
+        :
       </div>
       <div className="px-4 ">
         <p className="text-right text-sm font-semibold font-serif pb-1">
@@ -238,7 +242,10 @@ export default function Actor() {
           placeholder="اختار اسم العرض"
           options={Plays}
           menuPlacement="top"
-          onChange={(option) => setSelectedPlay(option)}
+          onChange={(option) => {
+            setSelectedPlay(option);
+            setNumber((prev) => prev + 1);
+          }}
           onCreateOption={(option) => {
             const newOption: Selected = {
               label: option,
