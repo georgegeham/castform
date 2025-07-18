@@ -18,6 +18,7 @@ export default function Actor() {
   } = useForm<ActorInputs>();
   const onSubmit: SubmitHandler<ActorInputs> = async (data) => {
     setIsSubmitting(true);
+    console.log(number);
     try {
       const file = data.ImageURL[0];
       const imageUrl: string = await uploadImageToImgbb(file);
@@ -27,7 +28,7 @@ export default function Actor() {
         email: data.email ?? null,
         bdate: data.bdate,
         DateOfEntrance: data.dateOfEntrance,
-        NoPlays: data.noPlays,
+        NoPlays: number.toString(),
         ImgURL: imageUrl,
         Plays:
           selectedPlay?.map((p) => ({
