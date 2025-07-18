@@ -62,8 +62,9 @@ export const createReward = async (input: string): Promise<Selected> => {
         },
       }
     );
+    console.log(response.data);
     return {
-      label: response.data.tname,
+      label: response.data.rname,
       value: response.data.ID,
     };
   } catch (err) {
