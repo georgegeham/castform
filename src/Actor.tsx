@@ -186,15 +186,14 @@ export default function Actor() {
           htmlFor="noPlays"
           className="text-lg text-[#021024] flex items-center"
         >
-          <span className="mr-2">🎭</span>No of Plays
-          <span className="text-red-600">*</span>
+          <span className="mr-2 opacity-55">🎭</span>No of Plays
         </label>
         <input
           type="text"
           id="noPlays"
           value={number}
           placeholder="Enter Number of Plays..."
-          className="rounded-md bg-[#021024] outline-none text-sm p-2 text-[#C1E8FF] "
+          className="rounded-md bg-[#021024] outline-none text-sm p-2 text-[#C1E8FF] opacity-55"
           {...register("noPlays", {
             required: true,
             maxLength: 2,
