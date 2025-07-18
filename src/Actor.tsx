@@ -81,7 +81,7 @@ export default function Actor() {
         />
         {errors.name && (
           <span className="text-[#021024] text-sm col-span-2 text-right pr-1 font-semibold">
-            انا ملسم الموقع اكتب عدل بقي
+            دخل الاسم ثنائي معلش
           </span>
         )}
       </div>
