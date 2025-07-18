@@ -2,11 +2,10 @@ import { Selected, Tournament, Reward, Play, ACTOR } from "./Types";
 import axios, { AxiosResponse } from "axios";
 //Tournaments
 //GET Tournaments
+const URL = "${URL}/";
 export const loadTournaments = async (): Promise<Selected[]> => {
   try {
-    const response = await axios.get<Tournament[]>(
-      "http://localhost:5050/tournaments"
-    );
+    const response = await axios.get<Tournament[]>(`${URL}/tournaments`);
     return response.data.map((tournament: Tournament) => ({
       value: tournament.ID,
       label: tournament.tname,
@@ -20,7 +19,7 @@ export const loadTournaments = async (): Promise<Selected[]> => {
 export const createTournament = async (newInput: string): Promise<Selected> => {
   try {
     const response = await axios.post(
-      ` http://localhost:5050/tournaments`,
+      ` ${URL}/tournaments`,
       { tname: newInput },
       {
         headers: {
@@ -41,7 +40,7 @@ export const createTournament = async (newInput: string): Promise<Selected> => {
 //Get Rewards
 export const loadRewards = async (): Promise<Selected[]> => {
   try {
-    const response = await axios.get<Reward[]>("http://localhost:5050/reward");
+    const response = await axios.get<Reward[]>(`${URL}/reward`);
     return response.data.map((reward: Reward) => ({
       value: reward.ID,
       label: reward.rname,
@@ -55,7 +54,7 @@ export const loadRewards = async (): Promise<Selected[]> => {
 export const createReward = async (input: string): Promise<Selected> => {
   try {
     const response = await axios.post(
-      "http://localhost:5050/reward",
+      `${URL}/reward`,
       { rname: input },
       {
         headers: {
@@ -77,7 +76,7 @@ export const createReward = async (input: string): Promise<Selected> => {
 //GET Plays
 export const loadPlays = async (): Promise<Selected[]> => {
   try {
-    const response = await axios.get<Play[]>("http://localhost:5050/plays");
+    const response = await axios.get<Play[]>(`${URL}/plays`);
     return response.data.map((play) => ({
       value: Date.now() + Math.random(),
       label: play.pname,
@@ -93,7 +92,7 @@ export const postPlay = async (
 ): Promise<AxiosResponse<any>> => {
   try {
     const response = await axios.post(
-      "http://localhost:5050/plays",
+      `${URL}/plays`,
       { ...inputValue },
       {
         headers: {
@@ -116,7 +115,7 @@ export const postActor = async (
 ): Promise<AxiosResponse<any>> => {
   try {
     const response = await axios.post(
-      "http://localhost:5050/actor",
+      `${URL}/actor`,
       { ...inputValue },
       {
         headers: {
