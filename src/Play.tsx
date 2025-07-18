@@ -22,7 +22,6 @@ export default function Play() {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<PlayInputs>();
   const onSubmit: SubmitHandler<PlayInputs> = async (data) => {
     setIsSubmitting(true);
@@ -57,7 +56,6 @@ export default function Play() {
       });
       if (response.status === 201) {
         setIsSubmitting(true);
-        reset();
         setSelectedPlay(null);
         setSelectedReward(null);
         setSelectedTournament(null);

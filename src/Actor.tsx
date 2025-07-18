@@ -32,7 +32,14 @@ export default function Actor() {
   const onSubmit: SubmitHandler<ActorInputs> = async (data) => {
     setIsSubmitting(true);
     try {
-      const file = data.ImageURL[0];
+      const fileInput = document.getElementById("Image") as HTMLInputElement;
+      const file = fileInput?.files?.[0] || data.ImageURL[0];
+
+      if (!file) {
+        alert("اختار صورة عدلة لو سمحت");
+        setIsSubmitting(false);
+        return;
+      }
       const imageUrl: string = await uploadImageToImgbb(file);
       const payload: ACTOR = {
         name: data.name,
@@ -60,7 +67,7 @@ export default function Actor() {
         setIsSubmitting(false);
       }
     } catch (error) {
-      alert("في مشكلة حاول مرة تانية");
+      alert(error);
       console.error("❌ Upload failed:", error);
     } finally {
       setIsSubmitting(false);
@@ -232,7 +239,6 @@ export default function Actor() {
         <input
           type="file"
           id="Image"
-          accept="image/*"
           className="rounded-md bg-[#021024] outline-none text-sm p-2 text-[#C1E8FF] "
           {...register("ImageURL", {
             required: true,
@@ -265,7 +271,7 @@ export default function Actor() {
           menuPlacement="top"
           onChange={(option) => {
             setSelectedPlay(option);
-            setNumber((prev) => prev + 1);
+            setNumber(option ? option.length : 0);
           }}
           value={selectedPlay}
         />
