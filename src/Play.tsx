@@ -22,11 +22,13 @@ export default function Play() {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm<PlayInputs>();
   const onSubmit: SubmitHandler<PlayInputs> = async (data) => {
     setIsSubmitting(true);
     if (!selectedPlay || !selectedTournament) {
       alert("اختار العرض و المهرجان");
+      setIsSubmitting(false);
       return;
     }
     let rewards: Reward[] | [] = [];
@@ -55,6 +57,10 @@ export default function Play() {
       });
       if (response.status === 201) {
         setIsSubmitting(true);
+        reset();
+        setSelectedPlay(null);
+        setSelectedReward(null);
+        setSelectedTournament(null);
         alert("تم الحفظ بنجاح");
       }
     } catch (err) {
