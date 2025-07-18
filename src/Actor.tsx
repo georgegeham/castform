@@ -240,7 +240,7 @@ export default function Actor() {
           onChange={handleFileChange}
         />
         {fileSelected && (
-          <p className="text-green-500 text-sm mt-1 col-span-3">
+          <p className="text-green-500 text-sm mt-1 col-span-3 text-rigth">
             ✅ اترفعت يا نجم يا كبير
           </p>
         )}
