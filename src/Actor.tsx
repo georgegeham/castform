@@ -53,7 +53,6 @@ export default function Actor() {
       }
     } catch (err) {
       alert("في مشكلة حاول مرة تانية");
-      console.error("❌ Upload failed:", err);
     } finally {
       setIsSubmitting(false);
     }
