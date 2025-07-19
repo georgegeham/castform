@@ -224,7 +224,6 @@ export default function Actor() {
         <input
           type="file"
           id="Image"
-          accept="image/*"
           className="rounded-md bg-[#021024] outline-none text-sm p-2 text-[#C1E8FF] "
           {...register("ImageURL", {
             required: true,
