@@ -16,30 +16,15 @@ export default function Actor() {
   const [selectedPlay, setSelectedPlay] = useState<MultiValue<Selected>>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [number, setNumber] = useState(0);
-  const [fileSelected, setFileSelected] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<ActorInputs>();
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFileSelected(true);
-    } else {
-      setFileSelected(false);
-    }
-  };
   const onSubmit: SubmitHandler<ActorInputs> = async (data) => {
     setIsSubmitting(true);
     try {
-      const fileInput = document.getElementById("Image") as HTMLInputElement;
-      const file = fileInput?.files?.[0] || data.ImageURL[0];
-
-      if (!file) {
-        alert("اختار صورة عدلة لو سمحت");
-        setIsSubmitting(false);
-        return;
-      }
+      const file = data.ImageURL[0];
       const imageUrl: string = await uploadImageToImgbb(file);
       const payload: ACTOR = {
         name: data.name,
@@ -67,7 +52,7 @@ export default function Actor() {
         setIsSubmitting(false);
       }
     } catch (error) {
-      alert(error);
+      alert("في مشكلة حاول مرة تانية");
       console.error("❌ Upload failed:", error);
     } finally {
       setIsSubmitting(false);
@@ -239,17 +224,12 @@ export default function Actor() {
         <input
           type="file"
           id="Image"
+          accept="image/*"
           className="rounded-md bg-[#021024] outline-none text-sm p-2 text-[#C1E8FF] "
           {...register("ImageURL", {
             required: true,
           })}
-          onChange={handleFileChange}
         />
-        {fileSelected && (
-          <p className="text-green-500 text-sm mt-1 col-span-3 text-right">
-            ✅ اترفعت يا نجم يا كبير
-          </p>
-        )}
         {errors.noPlays && (
           <span className="text-[#021024] text-sm col-span-2 text-right pr-1 font-semibold">
             يارب الموقع يضرب في وشك
