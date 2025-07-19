@@ -48,12 +48,12 @@ export default function Actor() {
 
       const result = await postActor(payload);
       if (result.status === 201) {
-        alert("تم تسجيلك بنجاح");
         setIsSubmitting(false);
+        alert("تم تسجيلك بنجاح");
       }
-    } catch (error) {
+    } catch (err) {
       alert("في مشكلة حاول مرة تانية");
-      console.error("❌ Upload failed:", error);
+      console.error("❌ Upload failed:", err);
     } finally {
       setIsSubmitting(false);
     }
